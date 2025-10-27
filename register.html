@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <h1>Register page</h1>
+  <div id="app">
+    {{register}}
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.16/vue.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.0/axios.js"></script>
+  <script>
+    new Vue({
+      el: "#app",
+      data: {
+        register: []
+      },
+      methods: {
+        async registerUsers() {
+          reg = await axios.get("http://127.0.0:5000/api/register")
+          this.register = reg.data;
+        }
+      },
+      mounted() {
+        this.registerUsers();
+      }
+    });
+  </script>
+</body>
+
+</html>

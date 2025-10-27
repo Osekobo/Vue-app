@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <!-- {{ products }} -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Buying Price</th>
+          <th>Selling Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="prod in products">
+          <td>{{prod["id"]}}</td>
+          <td>{{prod["name"]}}</td>
+          <td>{{prod["buying_price"]}}</td>
+          <td>{{prod["selling_price"]}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.16/vue.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.0/axios.js"></script>
+  <script>
+    new Vue({
+      el: "#app",
+      data: {
+        products: []
+      },
+      methods: {
+        async getProducts() {
+          prods = await axios.get("http://127.0.0:5000/products")
+          this.products = prods.data;
+        }
+      },
+      mounted() {
+        this.getProducts();
+      }
+    });
+  </script>
+</body>
+
+</html>
