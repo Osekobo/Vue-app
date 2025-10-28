@@ -16,7 +16,6 @@
       <input type="password" v-model="password" class="form-control mb-3" placeholder="Enter Password" required>
       <button type="submit" class="btn btn-primary w-100">Login</button>
     </form>
-
     <div v-if="message" class="alert alert-warning mt-3 text-center">
       Ensure all fields are set.
     </div>
@@ -39,15 +38,15 @@
             this.message = true;
             return;
           }
-
           try {
             const resp = await axios.post("http://127.0.0.1:5000/api/login", {
               email: this.email,
               password: this.password
             });
-
             console.log("Token:", resp.data.token);
-            alert("Your token: " + resp.data.token);
+            localStorage.setItem("token", resp.data.token)
+            alert("Login Successful")
+            window.location.href = "products.html"
           } catch (err) {
             console.error("Login error:", err.response?.data || err.message);
             alert("Login failed: " + (err.response?.data?.error || "Unknown error"));

@@ -9,7 +9,6 @@
 
 <body>
   <div id="app">
-    <!-- {{ products }} -->
     <table class="table">
       <thead>
         <tr>
@@ -39,12 +38,18 @@
       },
       methods: {
         async getProducts() {
-          prods = await axios.get("http://127.0.0:5000/products")
+          headers = { headers: { Authorisation: `Bearer ${localStorage.getItem("token")}` } }
+          prods = await axios.get("http://127.0.0.1:5000/api/products", headers)
           this.products = prods.data;
         }
       },
       mounted() {
-        this.getProducts();
+        if (localStorage.getItem("token") != null) {
+          this.getProducts();
+        }
+        else {
+          window.location.href = "login.html"
+        }
       }
     });
   </script>
