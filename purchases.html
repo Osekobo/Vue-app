@@ -5,60 +5,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
 </head>
 
 <body>
-  <h1>Products Page</h1>
+  <h1>Purchases Page</h1>
   <div id="app">
     <table class="table">
       <thead>
         <tr>
           <th>ID</th>
           <th>Name</th>
-          <th>Buying Price</th>
-          <th>Selling Price</th>
-          <!-- <th>Created At</th>
-          <th>Updated At</th> -->
+          <th>Quantity</th>
+          <!-- <th>Selling Price</th> -->
+          <th>Created At</th>
+          <!-- <th>Updated At</th> -->
         </tr>
       </thead>
       <tbody>
-        <tr v-for="prod in products">
-          <td>{{prod["id"]}}</td>
-          <td>{{prod["name"]}}</td>
-          <td>{{prod["buying_price"]}}</td>
-          <td>{{prod["selling_price"]}}</td>
-          <!-- <td>{{prod["created_at"]}}</td>
-          <td>{{prod["updated_at"]}}</td> -->
+        <tr v-for="purs in purchases">
+          <td>{{purs["id"]}}</td>
+          <td>{{purs["name"]}}</td>
+          <td>{{purs["quantity"]}}</td>
+          <!-- <td>{{purs["selling_price"]}}</td> -->
+          <!-- <td>{{purs["created_at"]}}</td>
+          <td>{{purs["updated_at"]}}</td> -->
         </tr>
       </tbody>
     </table>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.16/vue.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.0/axios.js"></script>
-  <script>
-    new Vue({
+  <script> new Vue({
       el: "#app",
       data: {
-        products: []
+        purchases: []
       },
       methods: {
-        async getProducts() {
+        async getPurchases() {
           headers = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
-          prods = await axios.get("http://127.0.0.1:5000/api/products", headers)
-          this.products = prods.data;
+          purs = await axios.get("http://127.0.0.1:5000/api/purchases", headers)
+          this.purchases = purs.data;
         }
       },
       mounted() {
         if (localStorage.getItem("token") != null) {
-          this.getProducts();
+          this.getPurchases();
         }
         else {
           window.location.href = "login.html"
         }
       }
-    });
-  </script>
+    });</script>
 </body>
 
 </html>
