@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+
+<body>
+
+  <div id="app" class="container text-center mt-5">
+    <h1>Sales Page</h1>
+    <table class="table table-hover mt-5">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Product Id</th>
+          <th>Quantity</th>
+          <th>Created At</th>
+          <th>Updated At</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="sale in sales">
+          <td>{{sale["id"]}}</td>
+          <td>{{sale["product_id"]}}</td>
+          <td>{{sale["quantity"]}}</td>
+          <td>{{sale["created_at"]}}</td>
+          <td>{{sale["updated_at"]}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.16/vue.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.0/axios.js"></script>
+  <script>
+    new Vue({
+      el: "#app",
+      data: {
+        sales: []
+      },
+      methods: {
+        async getSales() {
+          headers = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+          sale = await axios.get("http://127.0.0.1:5000/api/sales", headers)
+          this.sales = sale.data;
+        }
+      },
+      mounted() {
+        if (localStorage.getItem("token") != null) {
+          this.getSales();
+        }
+        else {
+          window.location.href = "login.html"
+        }
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
+    integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
