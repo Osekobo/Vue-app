@@ -80,14 +80,14 @@
         async addProduct() {
           try {
             const headers = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-            // const inputName = this.newProduct.name.trim().toLowerCase();
-            // const exists = this.products.some(
-            //   (product) => product.name.trim().toLowerCase() === inputName
-            // );
-            // if (exists) {
-            //   alert("Cannot add product yo!: product already exists.");
-            //   return;
-            // }
+            const inputName = this.newProduct.name.trim().toLowerCase();
+            const exists = this.products.some(
+              (product) => product.name.trim().toLowerCase() === inputName
+            );
+            if (exists) {
+              alert("Cannot add product yo!: product already exists.");
+              return;
+            }
             const newProduct = {
               name: this.name,
               buying_price: this.buying_price,
