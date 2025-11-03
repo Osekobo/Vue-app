@@ -13,6 +13,33 @@
 
   <div id="app" class="container text-center mt-5">
     <h1>Sales Page</h1>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      Add Sale
+    </button>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Add Sale</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="addSale">
+              <input type="number" v-model="product_id" class="form-control mb-3" placeholder="Product Id" required>
+              <input type="number" v-model="quantity" class="form-control mb-3" placeholder="Quantity"
+                required>
+              <button type="submit" class="btn btn-outline-primary">Add</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <table class="table table-hover mt-5">
       <thead>
         <tr>
@@ -40,13 +67,41 @@
     new Vue({
       el: "#app",
       data: {
-        sales: []
+        sales: [],
+        product_id: "",
+        quantity: ""
       },
       methods: {
         async getSales() {
-          headers = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
-          sale = await axios.get("http://127.0.0.1:5000/api/sales", headers)
-          this.sales = sale.data;
+          try {
+            const headers = {
+              headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            };
+            const sale = await axios.get("http://127.0.0.1:5000/api/sales", headers)
+            this.sales = sale.data;
+          } catch (error) {
+            console.error("Error fetching sales:", error);
+            alert("Failed to fetch sales!");
+          }
+        },
+        async addSale() {
+          try {
+            const headers = {
+              headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            };
+            const newSale = {
+              product_id: this.product_id,
+              quantity: this.quantity
+            };
+            await axios.post("http://127.0.0.1:5000/api/sales", newSale, headers);
+            alert("Sale added successfully!");
+            this.product_id = "";
+            this.quantity = "";
+            this.getSales();
+          } catch (error) {
+            console.error("Error adding sale:", error);
+            alert("Failed to add sale!");
+          }
         }
       },
       mounted() {

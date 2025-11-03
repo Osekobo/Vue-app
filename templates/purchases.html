@@ -13,6 +13,31 @@
 
   <div id="app" class="container text-center mt-5">
     <h1>Purchases Page</h1>
+
+    <button type="button" class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      Add Purchase
+    </button>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Add Purchase</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="addPurchase">
+              <input type="number" v-model="product_id" class="form-control mb-3" placeholder="Product Id" required>
+              <input type="number" v-model="quantity" class="form-control mb-3" placeholder="Quantity" required>
+              <button type="submit" class="btn btn-outline-primary">Add</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <table class="table table-hover mt-5">
       <thead>
         <tr>
@@ -39,21 +64,51 @@
   <script> new Vue({
       el: "#app",
       data: {
-        purchases: []
+        purchases: [],
+        product_id: "",
+        quantity: ""
       },
       methods: {
         async getPurchases() {
-          headers = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
-          purs = await axios.get("http://127.0.0.1:5000/api/purchases", headers)
-          this.purchases = purs.data;
+          try {
+            const headers = {
+              headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            };
+            const response = await axios.get("http://127.0.0.1:5000/api/purchases", headers);
+            this.purchases = response.data;
+          } catch (error) {
+            console.error("Error fetching purchases:", error);
+          }
+        },
+        async addPurchase() {
+          try {
+            const headers = {
+              headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            };
+            if (!this.product_id || !this.quantity) {
+              alert("Please enter both product ID and quantity.");
+              return;
+            }
+            const newPurchase = {
+              product_id: this.product_id,
+              quantity: this.quantity
+            };
+            await axios.post("http://127.0.0.1:5000/api/purchases", newPurchase, headers);
+            alert("Purchase added successfully!");
+            this.product_id = "";
+            this.quantity = "";
+            this.getPurchases();
+          } catch (error) {
+            console.error("Error adding purchase:", error);
+            alert("Failed to add purchase!");
+          }
         }
       },
       mounted() {
         if (localStorage.getItem("token") != null) {
           this.getPurchases();
-        }
-        else {
-          window.location.href = "login.html"
+        } else {
+          window.location.href = "login.html";
         }
       }
     });</script>
