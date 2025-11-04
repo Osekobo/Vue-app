@@ -17,8 +17,6 @@
     <button type="button" class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
       Add Purchase
     </button>
-
-
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -121,3 +119,57 @@
 </body>
 
 </html>
+
+
+
+<script>
+            new Vue({
+                el: "#app",
+                data: {
+                    // Data properties can be added here
+                    data: [],
+                    labels:[],
+                },
+                methods: {
+                    async remainingstock() {
+                        axios
+                            .get("http://127.0.0.1:5000/api/dashboard")
+                            .then((response) => {
+                                this.data = response.data.data;
+                                this.labels = response.data.labels;
+                                console.log(this.data);
+                                console.log(this.labels);
+                                // Bar chart
+                                    new Chart(document.getElementById("bar-chart"), {
+                                    type: 'bar',
+                                    data: {
+                                    labels: this.labels,
+                                    datasets: [
+                                        {
+                                        label: "Remaining Stock",
+                                        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                                        data: this.data
+                                        }
+                                    ]
+                                    },
+                                    options: {
+                                    legend: { display: false },
+                                    title: {
+                                        display: true,
+                                        text: 'Predicted world population (millions) in 2050'
+                                    }
+                                    }
+                                });
+                            })
+                            .catch((error) => {
+                                console.error("There was an error!", error);
+                            });
+                    },
+                },
+                mounted() {
+                    this.remainingstock();
+                },
+
+            });
+
+        </script>

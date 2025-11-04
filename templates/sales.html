@@ -18,8 +18,6 @@
     <button type="button" class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
       Add Sale
     </button>
-
-
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -31,8 +29,7 @@
           <div class="modal-body">
             <form @submit.prevent="addSale">
               <input type="number" v-model="product_id" class="form-control mb-3" placeholder="Product Id" required>
-              <input type="number" v-model="quantity" class="form-control mb-3" placeholder="Quantity"
-                required>
+              <input type="number" v-model="quantity" class="form-control mb-3" placeholder="Quantity" required>
               <button type="submit" class="btn btn-outline-primary">Add</button>
             </form>
           </div>
