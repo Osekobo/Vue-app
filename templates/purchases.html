@@ -10,7 +10,27 @@
 </head>
 
 <body>
-
+  <header class="flex-fill">
+    <nav class="navbar navbar-expand-lg bg-body-secondary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">The Mall</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+            <li class="nav-item"><a class="nav-link" href="purchases.html">Purchases</a></li>
+            <li class="nav-item"><a class="nav-link" href="sales.html">Sales</a></li>
+            <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
+            <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
   <div id="app" class="container text-center mt-5">
     <h1>Purchases Page</h1>
 
@@ -76,6 +96,7 @@
             this.purchases = response.data;
           } catch (error) {
             console.error("Error fetching purchases:", error);
+            alert("Failed to fetch purchases!");
           }
         },
         async addPurchase() {
@@ -83,10 +104,6 @@
             const headers = {
               headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
             };
-            if (!this.product_id || !this.quantity) {
-              alert("Please enter both product ID and quantity.");
-              return;
-            }
             const newPurchase = {
               product_id: this.product_id,
               quantity: this.quantity
@@ -119,57 +136,3 @@
 </body>
 
 </html>
-
-
-
-<script>
-            new Vue({
-                el: "#app",
-                data: {
-                    // Data properties can be added here
-                    data: [],
-                    labels:[],
-                },
-                methods: {
-                    async remainingstock() {
-                        axios
-                            .get("http://127.0.0.1:5000/api/dashboard")
-                            .then((response) => {
-                                this.data = response.data.data;
-                                this.labels = response.data.labels;
-                                console.log(this.data);
-                                console.log(this.labels);
-                                // Bar chart
-                                    new Chart(document.getElementById("bar-chart"), {
-                                    type: 'bar',
-                                    data: {
-                                    labels: this.labels,
-                                    datasets: [
-                                        {
-                                        label: "Remaining Stock",
-                                        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-                                        data: this.data
-                                        }
-                                    ]
-                                    },
-                                    options: {
-                                    legend: { display: false },
-                                    title: {
-                                        display: true,
-                                        text: 'Predicted world population (millions) in 2050'
-                                    }
-                                    }
-                                });
-                            })
-                            .catch((error) => {
-                                console.error("There was an error!", error);
-                            });
-                    },
-                },
-                mounted() {
-                    this.remainingstock();
-                },
-
-            });
-
-        </script>
