@@ -10,23 +10,24 @@
 </head>
 
 <body>
-<header class="flex-fill">
+  <header class="flex-fill">
     <nav class="navbar navbar-expand-lg bg-body-secondary">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">The Mall</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="index.html">The Mall</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-          <ul class="navbar-nav">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
             <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
             <li class="nav-item"><a class="nav-link" href="purchases.html">Purchases</a></li>
             <li class="nav-item"><a class="nav-link" href="sales.html">Sales</a></li>
-            <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
-            <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
           </ul>
+          <form class="d-flex" role="search">
+            <button class="btn btn-outline-danger" type="submit" href="login.html">Logout</button>
+          </form>
         </div>
       </div>
     </nav>
@@ -52,6 +53,29 @@
               <input type="number" v-model="quantity" class="form-control mb-3" placeholder="Quantity" required>
               <button type="submit" class="btn btn-outline-primary">Add</button>
             </form>
+            <table class="table table-hover mt-5">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Product ID</th>
+                  <th>Quantity</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(sale, index) in salesList" :key="index">
+                  <td>{{ index + 1 }}</td>
+                  <td>{{ sale.product_id }}</td>
+                  <td>{{ sale.quantity }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-danger" @click="removeSale(index)">Remove</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-center mt-3" v-if="salesList.length > 0">
+              <button type="submit" class="btn btn-success" @click="makeSale">Make Sale</button>
+            </div>
           </div>
         </div>
       </div>
@@ -78,6 +102,9 @@
       </tbody>
     </table>
   </div>
+  <footer class="text-center bg-dark text-white p-3 mt-auto">
+    <p class="mb-0">&copy; 2025 The Mall</p>
+  </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.16/vue.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.0/axios.js"></script>
   <script>
@@ -85,6 +112,7 @@
       el: "#app",
       data: {
         sales: [],
+        salesList: [],
         product_id: "",
         quantity: ""
       },
@@ -102,22 +130,34 @@
           }
         },
         async addSale() {
+          if (this.product_id && this.quantity) {
+            this.salesList.push({
+              product_id: this.product_id,
+              quantity: this.quantity
+            });
+            this.product_id = "";
+            this.quantity = "";
+          }
+        }
+        ,
+        async makeSale() {
           try {
             const headers = {
               headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
             };
-            const newSale = {
-              product_id: this.product_id,
-              quantity: this.quantity
-            };
-            await axios.post("http://127.0.0.1:5000/api/sales", newSale, headers);
-            alert("Sale added successfully!");
-            this.product_id = "";
-            this.quantity = "";
-            this.getSales();
+            // Ensure there’s something to submit
+            if (this.salesList.length === 0) {
+              alert("Add at least one product before submitting!");
+              return;
+            }
+            // Send sales list as request body
+            const responce = await axios.post("http://127.0.0.1:5000/api/sales", { sales: this.salesList }, headers);
+            alert("Sales added successfully!");
+            this.salesList = [];
+            this.makeSale();
           } catch (error) {
-            console.error("Error adding sale:", error);
-            alert("Failed to add sale!");
+            console.error("Error adding sales:", error)
+            alert("Failed to add sales!")
           }
         }
       },
@@ -145,54 +185,22 @@
 
 <!-- 
 
-<script>
-  new Vue({
-    el: "#app",
-    data: {
-      // Data properties can be added here
-      data: [],
-      labels: [],
-    },
-    methods: {
-      async remainingstock() {
-        axios
-          .get("http://127.0.0.1:5000/api/dashboard")
-          .then((response) => {
-            this.data = response.data.data;
-            this.labels = response.data.labels;
-            console.log(this.data);
-            console.log(this.labels);
-            // Bar chart
-            new Chart(document.getElementById("bar-chart"), {
-              type: 'bar',
-              data: {
-                labels: this.labels,
-                datasets: [
-                  {
-                    label: "Remaining Stock",
-                    backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
-                    data: this.data
-                  }
-                ]
-              },
-              options: {
-                legend: { display: false },
-                title: {
-                  display: true,
-                  text: 'Predicted world population (millions) in 2050'
-                }
-              }
-            });
-          })
-          .catch((error) => {
-            console.error("There was an error!", error);
-          });
-      },
-    },
-    mounted() {
-      this.remainingstock();
-    },
-
-  });
-
-</script> -->
+addSale() {
+          try {
+            const headers = {
+              headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            };
+            const newSale = {
+              product_id: this.product_id,
+              quantity: this.quantity
+            };
+            await axios.post("http://127.0.0.1:5000/api/sales", newSale, headers);
+            alert("Sale added successfully!");
+            this.product_id = "";
+            this.quantity = "";
+            this.getSales();
+          } catch (error) {
+            console.error("Error adding sale:", error);
+            alert("Failed to add sale!");
+          }
+        } -->
