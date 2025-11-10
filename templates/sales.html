@@ -56,10 +56,10 @@
             <table class="table table-hover mt-5">
               <thead>
                 <tr>
-                  <th>#</th>
+                  <th>Sale Number</th>
                   <th>Product ID</th>
                   <th>Quantity</th>
-                  <th>Action</th>
+                  <!-- <th>Action</th> -->
                 </tr>
               </thead>
               <tbody>
@@ -67,9 +67,9 @@
                   <td>{{ index + 1 }}</td>
                   <td>{{ sale.product_id }}</td>
                   <td>{{ sale.quantity }}</td>
-                  <td>
+                  <!-- <td>
                     <button class="btn btn-sm btn-danger" @click="removeSale(index)">Remove</button>
-                  </td>
+                  </td> -->
                 </tr>
               </tbody>
             </table>
@@ -84,7 +84,7 @@
     <table class="table table-hover mt-5">
       <thead>
         <tr>
-          <th>ID</th>
+          <!-- <th>ID</th> -->
           <th>Product Id</th>
           <th>Quantity</th>
           <th>Created At</th>
@@ -93,7 +93,7 @@
       </thead>
       <tbody>
         <tr v-for="sale in sales">
-          <td>{{sale["id"]}}</td>
+          <!-- <td>{{sale["id"]}}</td> -->
           <td>{{sale["product_id"]}}</td>
           <td>{{sale["quantity"]}}</td>
           <td>{{sale["created_at"]}}</td>
@@ -154,7 +154,7 @@
             const responce = await axios.post("http://127.0.0.1:5000/api/sales", { sales: this.salesList }, headers);
             alert("Sales added successfully!");
             this.salesList = [];
-            this.makeSale();
+            this.getSales();
           } catch (error) {
             console.error("Error adding sales:", error)
             alert("Failed to add sales!")
@@ -180,27 +180,3 @@
 </body>
 
 </html>
-
-
-
-<!-- 
-
-addSale() {
-          try {
-            const headers = {
-              headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-            };
-            const newSale = {
-              product_id: this.product_id,
-              quantity: this.quantity
-            };
-            await axios.post("http://127.0.0.1:5000/api/sales", newSale, headers);
-            alert("Sale added successfully!");
-            this.product_id = "";
-            this.quantity = "";
-            this.getSales();
-          } catch (error) {
-            console.error("Error adding sale:", error);
-            alert("Failed to add sale!");
-          }
-        } -->

@@ -60,18 +60,18 @@
     <table class="table table-hover mt-5">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Quantity</th>
+          <!-- <th>ID</th> -->
           <th>Product Id</th>
+          <th>Quantity</th>
           <th>Created At</th>
           <th>Updated At</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="purs in purchases">
-          <td>{{purs["id"]}}</td>
-          <td>{{purs["quantity"]}}</td>
+          <!-- <td>{{purs["id"]}}</td> -->
           <td>{{purs["product_id"]}}</td>
+          <td>{{purs["quantity"]}}</td>
           <td>{{purs["created_at"]}}</td>
           <td>{{purs["updated_at"]}}</td>
         </tr>
