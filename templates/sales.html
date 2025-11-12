@@ -59,7 +59,7 @@
                   <th>Sale Number</th>
                   <th>Product ID</th>
                   <th>Quantity</th>
-                  <!-- <th>Action</th> -->
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -67,44 +67,79 @@
                   <td>{{ index + 1 }}</td>
                   <td>{{ sale.product_id }}</td>
                   <td>{{ sale.quantity }}</td>
-                  <!-- <td>
-                    <button class="btn btn-sm btn-danger" @click="removeSale(index)">Remove</button>
-                  </td> -->
+                  <td>
+                    <button class="btn btn-sm btn-outline-danger" @click="removeSale(index)"
+                      type="submit">Remove</button><!--remove sale function-->
+                  </td>
                 </tr>
               </tbody>
             </table>
             <div class="text-center mt-3" v-if="salesList.length > 0">
-              <button type="submit" class="btn btn-success" @click="makeSale">Make Sale</button>
+              <button type="submit" class="btn btn-outline-success" @click="makeSale">Make Sale</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-
     <table class="table table-hover mt-5">
       <thead>
         <tr>
-          <!-- <th>ID</th> -->
-          <th>Product Id</th>
-          <th>Quantity</th>
+          <th>Sale ID</th>
           <th>Created At</th>
-          <th>Updated At</th>
+          <th>View items</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="sale in sales">
-          <!-- <td>{{sale["id"]}}</td> -->
-          <td>{{sale["product_id"]}}</td>
-          <td>{{sale["quantity"]}}</td>
+          <td>{{sale["sale_id"]}}</td>
           <td>{{sale["created_at"]}}</td>
-          <td>{{sale["updated_at"]}}</td>
+          <td><!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModa"
+              @click="fetchProducts(sale.sale_id)"><!--{{item.sale_id}}-->
+              View Items 
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <!--{{item.sale_id}}-->
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Receipt for sale number</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>product id</th>
+                  <th>name</th>
+                  <th>quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="k in soldProducts">
+                  <td>{{k["product_id"]}}</td>
+                  <td>{{k["product_name"]}}</td>
+                  <td>{{k["quantity"]}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Print Receipt</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <footer class="text-center bg-dark text-white p-3 mt-auto">
     <p class="mb-0">&copy; 2025 The Mall</p>
   </footer>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.16/vue.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.0/axios.js"></script>
   <script>
@@ -113,16 +148,27 @@
       data: {
         sales: [],
         salesList: [],
+        soldProducts: [],
         product_id: "",
         quantity: ""
       },
       methods: {
+        async fetchProducts(i) {
+          // fetch items associated with sale_id
+          for (const j in this.sales) {
+            if (this.sales[j].sale_id == i) {
+              this.soldProducts = this.sales[j].items;
+            }
+            // console.log(this.soldProducts)
+          }
+        },
         async getSales() {
           try {
             const headers = {
               headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
             };
             const sale = await axios.get("http://127.0.0.1:5000/api/sales", headers)
+            // this.sales=[...sale.data],
             this.sales = sale.data;
           } catch (error) {
             console.error("Error fetching sales:", error);
@@ -151,10 +197,13 @@
               return;
             }
             // Send sales list as request body
-            const responce = await axios.post("http://127.0.0.1:5000/api/sales", { sales: this.salesList }, headers);
+            console.log("📦 Sending sales:++++++++++++++++++++++++++++++", this.salesList);
+
+            const response = await axios.post("http://127.0.0.1:5000/api/sales", { sales: this.salesList }, headers);
             alert("Sales added successfully!");
             this.salesList = [];
             this.getSales();
+            await this.getSales();
           } catch (error) {
             console.error("Error adding sales:", error)
             alert("Failed to add sales!")

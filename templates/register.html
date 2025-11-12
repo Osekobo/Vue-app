@@ -42,15 +42,29 @@
       },
       methods: {
         async registerUser() {
-          reg = await axios.get("http://127.0.0:5000/api/register")
-          this.register = reg.data;
+          try {
+            const userData = {
+              name: this.name,
+              email: this.email,
+              password: this.password
+            };
+
+            const response = await axios.post(
+              "http://127.0.0.1:5000/api/register",
+              userData
+            );
+
+            this.message = "Registration successful!";
+            console.log("Registered user:", response.data);
+          } catch (error) {
+            console.error("Error registering:", error);
+            this.message = "Failed to register user!";
+          }
         }
-      },
-      mounted() {
-        this.registerUser();
       }
     });
   </script>
+
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
     integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
     crossorigin="anonymous"></script>

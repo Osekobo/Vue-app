@@ -48,14 +48,35 @@
           </div>
           <div class="modal-body">
             <form @submit.prevent="addPurchase">
-              <input type="number" v-model="product_id" class="form-control mb-3" placeholder="Product Id" required>
+
+              <div class="input-group mb-3">
+                <label class="input-group-text" for="inputGroupSelect01">Product Name</label>
+                <select class="form-select" id="inputGroupSelect01" v-model="product_id" required>
+                  <option disabled value="">Select</option>
+                  <option v-for="z in infoz" :key="z.id" value="z.id">{{z.name}}</option>
+                </select>
+              </div>
+
+
+              <!-- <input type="number" v-model="product_id" class="form-control mb-3" placeholder="Product Id" required> -->
+
               <input type="number" v-model="quantity" class="form-control mb-3" placeholder="Quantity" required>
+
               <button type="submit" class="btn btn-outline-primary">Add</button>
             </form>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- <h1>ok</h1>
+    <ul>
+      <li v-for="w in infoz">
+        {{ w.name }}
+      </li>
+      <li>ok</li>
+    </ul> -->
+
 
     <table class="table table-hover mt-5">
       <thead>
@@ -86,11 +107,21 @@
   <script> new Vue({
       el: "#app",
       data: {
+        infoz: [],
         purchases: [],
         product_id: "",
         quantity: ""
       },
       methods: {
+        async productList() {
+          try {
+            const headers = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+            const list = await axios.get("http://127.0.0.1:5000/api/products", headers);
+            this.infoz = list.data;
+          } catch (error) {
+            console.error("Error fetching products:", error);
+          }
+        },
         async getPurchases() {
           try {
             const headers = {
@@ -125,7 +156,8 @@
       },
       mounted() {
         if (localStorage.getItem("token") != null) {
-          this.getPurchases();
+          // this.getPurchases();
+          this.productList();
         } else {
           window.location.href = "login.html";
         }
