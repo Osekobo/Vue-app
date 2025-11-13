@@ -7,18 +7,19 @@
   <title>Document</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="sty.css">
 </head>
 
 <body>
 
   <div id="app" class="container mt-5 text-center">
-    <h1>Register</h1>
+    <h1 class="text-white">Register</h1>
     <form @submit.prevent="registerUser" class="p-3 border rounded shadow-sm w-50 mx-auto mt-5">
       <input v-model="name" type="text" class="form-control mb-3" placeholder="Name" required>
       <input v-model="email" type="email" class="form-control mb-3" placeholder="Enter Email" required>
       <input v-model="password" type="password" class="form-control mb-3" placeholder="Enter Password" required>
       <button type="submit" class="btn btn-outline-primary w-100">Register</button>
-      <p class="mt-3">
+      <p class="mt-3 text-white">
         Already have an account?
         <a href="login.html" class="text-primary fw-bold text-decoration-none">
           Login
@@ -64,7 +65,22 @@
       }
     });
   </script>
-
+  <script>
+    const logoutBtn = document.getElementById('logoutBtn');
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('show');
+    });
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    });
+    window.addEventListener('scroll', function () {
+      const scrollTop = window.pageYOffset;
+      document.body.style.backgroundPosition = `center ${scrollTop * 0.5}px`;
+    });
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
     integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
     crossorigin="anonymous"></script>

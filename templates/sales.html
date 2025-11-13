@@ -7,138 +7,145 @@
   <title>Document</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="sty.css">
 </head>
 
 <body>
-  <header class="flex-fill">
-    <nav class="navbar navbar-expand-lg bg-body-secondary">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="index.html">The Mall</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
-            <li class="nav-item"><a class="nav-link" href="purchases.html">Purchases</a></li>
-            <li class="nav-item"><a class="nav-link" href="sales.html">Sales</a></li>
-          </ul>
-          <form class="d-flex" role="search">
-            <button class="btn btn-outline-danger" type="submit" href="login.html">Logout</button>
-          </form>
+
+  <nav class="navbar navbar-expand-lg bg-body-tertiar">
+    <div class="container-fluid">
+      <a class="navbar-brand text-white" href="#">Navbar</a>
+      <!-- Sidebar toggle button for small screens -->
+      <button class="btn btn-outline-secondary d-lg-none" id="sidebarToggle">
+        ☰
+      </button>
+    </div>
+  </nav>
+  <nav class="navbar  flex-column p-3 sidebar" id="sidebar">
+    <a class="navbar-brand mb-4" href="#">The Mall</a>
+    <ul class="navbar-nav flex-column w-100 main-links">
+      <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+      <li class="nav-item"><a class="nav-link" href="purchases.html">Purchases</a></li>
+      <li class="nav-item"><a class="nav-link" href="sales.html">Sales</a></li>
+    </ul>
+    <ul class="navbar-nav flex-column w-100 logout-link">
+      <li class="nav-item mt-auto"><a class=""> <button id="logoutBtn" class="btn btn-outline-danger" type="submit"
+            @click="logout">Logout</button></a></li>
+    </ul>
+  </nav>
+  <main>
+    <div id="app" class="container text-center mt-5">
+      <h1 class="text-white">Sales Page</h1>
+
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Add Sale
+      </button>
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Add Sale</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form @submit.prevent="addSale">
+                <input type="number" v-model="product_id" class="form-control mb-3" placeholder="Product Id" required>
+                <input type="number" v-model="quantity" class="form-control mb-3" placeholder="Quantity" required>
+                <button type="submit" class="btn btn-outline-primary">Add</button>
+              </form>
+              <table class="table table-hover mt-5">
+                <thead>
+                  <tr>
+                    <th>Sale Number</th>
+                    <th>Product ID</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(sale, index) in salesList" :key="index">
+                    <td>{{ index + 1 }}</td>
+                    <td>{{ sale.product_id }}</td>
+                    <td>{{ sale.quantity }}</td>
+                    <td>
+                      <button class="btn btn-sm btn-outline-danger" @click="removeSale(index)"
+                        type="submit">Remove</button><!--remove sale function-->
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="text-center mt-3" v-if="salesList.length > 0">
+                <button type="submit" class="btn btn-outline-success" @click="makeSale">Make Sale</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </nav>
-  </header>
-  <div id="app" class="container text-center mt-5">
-    <h1>Sales Page</h1>
-
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
-      Add Sale
-    </button>
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Add Sale</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="addSale">
-              <input type="number" v-model="product_id" class="form-control mb-3" placeholder="Product Id" required>
-              <input type="number" v-model="quantity" class="form-control mb-3" placeholder="Quantity" required>
-              <button type="submit" class="btn btn-outline-primary">Add</button>
-            </form>
-            <table class="table table-hover mt-5">
-              <thead>
-                <tr>
-                  <th>Sale Number</th>
-                  <th>Product ID</th>
-                  <th>Quantity</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(sale, index) in salesList" :key="index">
-                  <td>{{ index + 1 }}</td>
-                  <td>{{ sale.product_id }}</td>
-                  <td>{{ sale.quantity }}</td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-danger" @click="removeSale(index)"
-                      type="submit">Remove</button><!--remove sale function-->
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="text-center mt-3" v-if="salesList.length > 0">
-              <button type="submit" class="btn btn-outline-success" @click="makeSale">Make Sale</button>
+      <table class="table table-hover mt-5">
+        <thead>
+          <tr>
+            <th>Sale ID</th>
+            <th>Created At</th>
+            <th>View items</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="sale in sales">
+            <td>{{sale["sale_id"]}}</td>
+            <td>{{sale["created_at"]}}</td>
+            <td><!-- Button trigger modal -->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModa"
+                @click="fetchProducts(sale.sale_id)"><!--{{item.sale_id}}-->
+                View Items
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <!--{{item.sale_id}}-->
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Receipt for sale number</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>product id</th>
+                    <th>name</th>
+                    <th>quantity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="k in soldProducts">
+                    <td>{{k["product_id"]}}</td>
+                    <td>{{k["product_name"]}}</td>
+                    <td>{{k["quantity"]}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary">Print Receipt</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <table class="table table-hover mt-5">
-      <thead>
-        <tr>
-          <th>Sale ID</th>
-          <th>Created At</th>
-          <th>View items</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="sale in sales">
-          <td>{{sale["sale_id"]}}</td>
-          <td>{{sale["created_at"]}}</td>
-          <td><!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModa"
-              @click="fetchProducts(sale.sale_id)"><!--{{item.sale_id}}-->
-              View Items 
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <!--{{item.sale_id}}-->
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Receipt for sale number</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>product id</th>
-                  <th>name</th>
-                  <th>quantity</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="k in soldProducts">
-                  <td>{{k["product_id"]}}</td>
-                  <td>{{k["product_name"]}}</td>
-                  <td>{{k["quantity"]}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Print Receipt</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <footer class="text-center bg-dark text-white p-3 mt-auto">
+    <!-- <div style="height: 1000px;"></div> -->
+  </main>
+
+  <footer>
     <p class="mb-0">&copy; 2025 The Mall</p>
   </footer>
+
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.16/vue.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.0/axios.js"></script>
@@ -218,6 +225,22 @@
           window.location.href = "login.html"
         }
       }
+    });
+  </script>
+  <script>
+    const logoutBtn = document.getElementById('logoutBtn');
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('show');
+    });
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    });
+    window.addEventListener('scroll', function () {
+      const scrollTop = window.pageYOffset;
+      document.body.style.backgroundPosition = `center ${scrollTop * 0.5}px`;
     });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
