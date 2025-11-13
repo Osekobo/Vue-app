@@ -1,4 +1,3 @@
-/* Reset & full viewport layout */
 body {
   margin: 0;
   display: flex;
@@ -7,14 +6,13 @@ body {
   font-family: Arial, sans-serif;
   overflow-x: hidden;
   font-family: Arial, sans-serif;
-  background-image: url('image1.png'); 
+  background-image: url('image1.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-color: #000000;
 }
 
-/* Fixed top navbar */
 nav.navbar.bg-body-tertiar {
   position: fixed;
   top: 0;
@@ -26,7 +24,6 @@ nav.navbar.bg-body-tertiar {
   border-bottom: 1px solid #dee2e6;
 }
 
-/* Sidebar layout */
 .sidebar {
   width: 250px;
   background-color: #343a40;
@@ -34,36 +31,32 @@ nav.navbar.bg-body-tertiar {
   padding: 1rem;
   flex-shrink: 0;
   position: fixed;
-  top: 56px; /* below navbar */
+  top: 56px;
   bottom: 0;
   display: flex;
-  flex-direction: column; /* stack children vertically */
+  flex-direction: column;
   overflow-y: auto;
   transition: all 0.3s ease;
   z-index: 1040;
 }
 
-/* Sidebar brand */
 .sidebar .navbar-brand {
   color: #ffc107;
   font-weight: bold;
   font-size: 1.2rem;
 }
 
-/* Main links in the middle */
 .sidebar .main-links {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* center vertically */
-  flex-grow: 1; /* take remaining space */
+  justify-content: center;
+  flex-grow: 1;
 }
 
-/* Logout link sticks to bottom */
 .sidebar .logout-link {
-  margin-top: auto; /* pushes it to bottom */
+  margin-top: auto;
 }
 
-/* Sidebar links */
 .sidebar .nav-link {
   color: #fff;
   padding: 0.5rem 1rem;
@@ -73,27 +66,24 @@ nav.navbar.bg-body-tertiar {
 }
 
 .sidebar .nav-link:hover {
-  background-color: #e60023;
+  background-color: #ffc107;
   /* color: #ffc107; */
 }
 
-/* Active link */
 .sidebar .nav-link.active {
   background-color: #ffc107;
   color: #343a40;
 }
 
-/* Main content */
 main {
-  margin-top: 56px; /* height of navbar */
-  margin-left: 250px; /* width of sidebar */
+  margin-top: 56px;
+  margin-left: 250px;
   padding: 1rem;
   flex-grow: 1;
   overflow-y: auto;
   min-height: calc(100vh - 56px);
 }
 
-/* Footer */
 footer {
   background-color: #212529;
   color: white;
@@ -102,49 +92,45 @@ footer {
   flex-shrink: 0;
 }
 
-/* Responsive adjustments */
 @media (max-width: 992px) {
   .sidebar {
     left: -250px;
   }
+
   .sidebar.show {
     left: 0;
   }
+
   main {
     margin-left: 0;
   }
 }
 
-
-/* Transparent, bordered, rounded table style */
 .table {
-  background-color: transparent !important;
-  color: #fff !important;
-  border-collapse: separate; /* allows border-radius + spacing */
+  background-color: transparent;
+  color: #fff;
+  border-collapse: separate;
   border-spacing: 0;
-  border: 2px solid rgba(255, 255, 255, 0.3); /* outer border */
-  border-radius: 10px;
-  overflow: hidden; /* ensures rounded corners clip */
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  /* border-radius: 10px; */
+  overflow: hidden;
 }
 
-/* Table header and cells */
-.table th, 
+.table th,
 .table td {
-  background-color: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.2); /* light white borders between rows/columns */
-  color: black !important;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: black;
   text-align: center;
   vertical-align: middle;
 }
 
-/* Optional: hover effect */
 .table-hover tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.05) !important;
+  background-color: rgba(255, 255, 255, 0.05);
   transition: background-color 0.3s ease;
 }
 
-/* Header styling for contrast */
 .table thead th {
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: rgba(255, 255, 255, 0.1);
   font-weight: bold;
 }
