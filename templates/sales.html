@@ -38,21 +38,27 @@
       <h1 class="text-white">Sales Page</h1>
       <!-- Button trigger modal -->
       <button type="button" class="btn btn-outline-warning mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Add Sale
+        Sale Car
       </button>
       <!-- Modal -->
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Add Sale</h1>
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Sale Car</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <form @submit.prevent="addSale">
-                <input type="number" v-model="product_id" class="form-control mb-3" placeholder="Product Id" required>
+                <div class="input-group mb-3">
+                  <label class="input-group-text" for="inputGroupSelect01">Car Name</label>
+                  <select class="form-select" id="inputGroupSelect01" v-model="product_id" required>
+                    <option disabled value="">Select</option>
+                    <option v-for="c in carSelect" :key="c.id" :value="c.id">{{c.name}}</option>
+                  </select>
+                </div>
                 <input type="number" v-model="quantity" class="form-control mb-3" placeholder="Quantity" required>
-                <button type="submit" class="btn btn-outline-primary">Add</button>
+                <button type="submit" class="btn btn-outline-primary">Sell</button>
               </form>
               <table class="table table-hover mt-5">
                 <thead>
@@ -86,7 +92,7 @@
         <thead>
           <tr>
             <th>Sale ID</th>
-            <th>Created At</th>
+            <th>Sold On</th>
             <th>View items</th>
           </tr>
         </thead>
@@ -115,9 +121,9 @@
               <table class="table table-hover">
                 <thead>
                   <tr>
-                    <th>product id</th>
-                    <th>name</th>
-                    <th>quantity</th>
+                    <th>Product Id</th>
+                    <th>Car Name</th>
+                    <th>Quantity</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -130,7 +136,7 @@
               </table>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Print Receipt</button>
+              <button type="button" class="btn btn-outline-primary">Print Receipt</button>
             </div>
           </div>
         </div>
@@ -148,11 +154,21 @@
       data: {
         sales: [],
         salesList: [],
+        carSelect: [],
         soldProducts: [],
         product_id: "",
         quantity: ""
       },
       methods: {
+        async carList() {
+          try {
+            const headers = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+            const carlist = await axios.get("http://127.0.0.1:5000/api/products", headers);
+            this.carSelect = carlist.data;
+          } catch (error) {
+            console.error("Error fetching products:", error);
+          }
+        },
         async fetchProducts(i) {
           for (const j in this.sales) {
             if (this.sales[j].sale_id == i) {
@@ -176,8 +192,8 @@
         async addSale() {
           if (this.product_id && this.quantity) {
             this.salesList.push({
-              product_id: this.product_id,
-              quantity: this.quantity
+              product_id: Number(this.product_id),
+              quantity: Number(this.quantity)
             });
             this.product_id = "";
             this.quantity = "";
@@ -212,6 +228,7 @@
       mounted() {
         if (localStorage.getItem("token") != null) {
           this.getSales();
+          this.carList();
         }
         else {
           window.location.href = "login.html"

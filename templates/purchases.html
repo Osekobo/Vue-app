@@ -37,27 +37,27 @@
     <div id="app" class="container text-center mt-5">
       <h1 class="text-white">Purchases Page</h1>
       <button type="button" class="btn btn-outline-warning mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Add Purchase
+        Purchase Car
       </button>
       <!-- Modal -->
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Add Purchase</h1>
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Car Details</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <form @submit.prevent="addPurchase">
                 <div class="input-group mb-3">
-                  <label class="input-group-text" for="inputGroupSelect01">Product Name</label>
+                  <label class="input-group-text" for="inputGroupSelect01">Car Name</label>
                   <select class="form-select" id="inputGroupSelect01" v-model="product_id" required>
                     <option disabled value="">Select</option>
                     <option v-for="z in infoz" :key="z.id" :value="z.id">{{z.name}}</option>
                   </select>
                 </div>
                 <input type="number" v-model="quantity" class="form-control mb-3" placeholder="Quantity" required>
-                <button type="submit" class="btn btn-outline-primary">Add</button>
+                <button type="submit" class="btn btn-outline-primary">Purchase</button>
               </form>
             </div>
           </div>
@@ -68,8 +68,9 @@
           <tr>
             <th>Product Id</th>
             <th>Quantity</th>
-            <th>Created At</th>
+            <th>Purchased On</th>
             <th>Updated At</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -78,6 +79,38 @@
             <td>{{purs["quantity"]}}</td>
             <td>{{purs["created_at"]}}</td>
             <td>{{purs["updated_at"]}}</td>
+            <td><!-- Button trigger modal -->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#xampleModal"
+                @click="selectedPurchase = purs">
+                Edit
+              </button>
+
+              <!-- Modal -->
+              <div class="modal fade" id="xampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Car Details</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" v-if="selectedPurchase">
+
+
+                      <form>
+                        <input type="number" class="form-control mb-3" :value="selectedPurchase.quantity" required>
+                        <input type="number" class="form-control mb-3" placeholder="New Quantity" required>
+                      </form>
+
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-outline-primary">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -92,6 +125,7 @@
       el: "#app",
       data: {
         infoz: [],
+        selectedPurchase: null,
         purchases: [],
         product_id: "",
         quantity: ""
@@ -169,6 +203,32 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
     integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
     crossorigin="anonymous"></script>
+
+  <!-- 
+  <div>
+    <form action="/edited_prod" method="POST">
+      <div class="mb-3">
+        <input type="hidden" value="{{product[0]}}" name="id" />
+        <label for="" class="form-label">Product Name</label>
+        <input type="Text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="name1"
+          value="{{product[1]}}" />
+
+        <label for="" class="form-label">Buying Price</label><br />
+        <input type="" value="{{product[2]}}" name="name2" disabled /><br /><br />
+        <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="name2"
+          value="{{product[2]}}" />
+        <label for="" class="form-label">Selling Price</label><br />
+        <input type="" value="{{product[3]}}" name="name3" disabled /><br /><br />
+        <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="name3"
+          value="{{product[3]}}" />
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">
+          Edit
+        </button>
+      </div>
+    </form>
+  </div> -->
 </body>
 
 </html>

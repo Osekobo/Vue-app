@@ -38,19 +38,19 @@
       <h1 class="text-white">Products Page</h1>
       <!-- Button trigger modal -->
       <button type="button" class="btn btn-outline-warning mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Add Product
+        Add New Car
       </button>
       <!-- Modal -->
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Add Product</h1>
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Car Details</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <form @submit.prevent="addProduct">
-                <input type="text" v-model="name" class="form-control mb-3" placeholder="Product Name" required>
+                <input type="text" v-model="name" class="form-control mb-3" placeholder="Car Name" required>
                 <input type="number" v-model="buying_price" class="form-control mb-3" placeholder="Buying Price"
                   required>
                 <input type="number" v-model="selling_price" class="form-control mb-3" placeholder="Selling Price"
@@ -65,7 +65,7 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Name</th>
+            <th>Car Name</th>
             <th>Buying Price</th>
             <th>Selling Price</th>
           </tr>
