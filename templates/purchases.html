@@ -70,7 +70,6 @@
             <th>Quantity</th>
             <th>Purchased On</th>
             <th>Updated At</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -79,38 +78,6 @@
             <td>{{purs["quantity"]}}</td>
             <td>{{purs["created_at"]}}</td>
             <td>{{purs["updated_at"]}}</td>
-            <td><!-- Button trigger modal -->
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#xampleModal"
-                @click="selectedPurchase = purs">
-                Edit
-              </button>
-
-              <!-- Modal -->
-              <div class="modal fade" id="xampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Car Details</h1>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body" v-if="selectedPurchase">
-
-
-                      <form>
-                        <input type="number" class="form-control mb-3" :value="selectedPurchase.quantity" required>
-                        <input type="number" class="form-control mb-3" placeholder="New Quantity" required>
-                      </form>
-
-
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-outline-primary">Save changes</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </td>
           </tr>
         </tbody>
       </table>
@@ -125,7 +92,6 @@
       el: "#app",
       data: {
         infoz: [],
-        selectedPurchase: null,
         purchases: [],
         product_id: "",
         quantity: ""
@@ -204,7 +170,7 @@
     integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
     crossorigin="anonymous"></script>
 
-  <!-- 
+<!-- 
   <div>
     <form action="/edited_prod" method="POST">
       <div class="mb-3">
