@@ -40,7 +40,7 @@
         Purchase Car
       </button>
       <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -49,6 +49,8 @@
             </div>
             <div class="modal-body">
               <form @submit.prevent="addPurchase">
+                
+
                 <div class="input-group mb-3">
                   <label class="input-group-text" for="inputGroupSelect01">Car Name</label>
                   <select class="form-select" id="inputGroupSelect01" v-model="product_id" required>
@@ -56,6 +58,8 @@
                     <option v-for="z in infoz" :key="z.id" :value="z.id">{{z.name}}</option>
                   </select>
                 </div>
+
+
                 <input type="number" v-model="quantity" class="form-control mb-3" placeholder="Quantity" required>
                 <button type="submit" class="btn btn-outline-primary">Purchase</button>
               </form>
