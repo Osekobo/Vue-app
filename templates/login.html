@@ -41,22 +41,25 @@
       },
       methods: {
         async postLogin() {
-          if (this.email === "" || this.password === "") {
+          if (!this.email || !this.password) {
             this.message = true;
             return;
           }
+          this.message = false;
           try {
             const resp = await axios.post("http://127.0.0.1:8000/login", {
               email: this.email,
               password: this.password
             });
-            console.log("Token:", resp.data.token);
-            localStorage.setItem("token", resp.data.token)
+            const token = resp.data.access_token;
+            // console.log("Token:", resp.data.token);
+            localStorage.setItem("token", token)
+            localStorage.setItem("token_type", resp.data.token_type);//
             alert("Login Successful")
             window.location.href = "index.html"
           } catch (err) {
             console.error("Login error:", err.response?.data || err.message);
-            alert("Login failed: " + (err.response?.data?.error || "Unknown error"));
+            alert("Login failed: " + (err.response?.data?.detail || "Unknown error"));
           }
         }
       }
@@ -66,13 +69,17 @@
     const logoutBtn = document.getElementById('logoutBtn');
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('sidebarToggle');
-    toggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('show');
-    });
-    logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem("token");
-      window.location.href = "login.html";
-    });
+
+    if (toggleBtn && sidebar) {
+      toggleBtn.addEventListener('click', () => sidebar.classList.toggle('show'));
+    }
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem("token");
+        window.location.href = "login.html";
+      });
+    }
     window.addEventListener('scroll', function () {
       const scrollTop = window.pageYOffset;
       document.body.style.backgroundPosition = `center ${scrollTop * 0.5}px`;
