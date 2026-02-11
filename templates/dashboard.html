@@ -62,7 +62,7 @@
           const headers = {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
           };
-          axios.get("http://127.0.0.1:8000/dashboard/rpp", headers)
+          axios.get("http://127.0.0.1:8000/dashboard/spp", headers)
             .then((response) => {
               this.data = response.data.data;
               this.labels = response.data.labels;

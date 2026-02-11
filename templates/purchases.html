@@ -49,7 +49,7 @@
             </div>
             <div class="modal-body">
               <form @submit.prevent="addPurchase">
-                
+
 
                 <div class="input-group mb-3">
                   <label class="input-group-text" for="inputGroupSelect01">Car Name</label>
@@ -101,22 +101,27 @@
         quantity: ""
       },
       methods: {
+        apiHeaders() {
+          const token = localStorage.getItem("token");
+          return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+        },
         async productList() {
           try {
-            const headers = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-            const list = await axios.get("http://127.0.0.1:5000/api/products", headers);
-            this.infoz = list.data;
+            // const headers = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+            const res = await axios.get("http://127.0.0.1:8000/products", this.apiHeaders());
+            this.infoz = res.data;
           } catch (error) {
             console.error("Error fetching products:", error);
+            alert("Failed to fetch products!");
           }
         },
         async getPurchases() {
           try {
-            const headers = {
-              headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-            };
-            const response = await axios.get("http://127.0.0.1:5000/api/purchases", headers);
-            this.purchases = response.data;
+            // const headers = {
+            //   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            // };
+            const res = await axios.get("http://127.0.0.1:8000/purchase", this.apiHeaders());
+            this.purchases = res.data;
           } catch (error) {
             console.error("Error fetching purchases:", error);
             alert("Failed to fetch purchases!");
@@ -124,14 +129,14 @@
         },
         async addPurchase() {
           try {
-            const headers = {
-              headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-            };
+            // const headers = {
+            //   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            // };
             const newPurchase = {
               product_id: Number(this.product_id),
               quantity: Number(this.quantity)
             };
-            await axios.post("http://127.0.0.1:5000/api/purchases", newPurchase, headers);
+            await axios.post("http://127.0.0.1:8000/purchase", newPurchase, this.apiHeaders());
             alert("Purchase added successfully!");
             this.product_id = "";
             this.quantity = "";

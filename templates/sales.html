@@ -97,12 +97,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="sale in sales">
-            <td>{{sale["sale_id"]}}</td>
-            <td>{{sale["created_at"]}}</td>
+          <tr v-for="sale in sales" :key="sale.id">
+            <td>{{sale.id}}</td>
+            <td>{{sale.created_at}}</td>
+            <!-- <td>-</td> -->
             <td>
               <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#exampleModa"
-                @click="fetchProducts(sale.sale_id)">
+                @click="fetchProducts(sale.id)">
                 View Items
               </button>
             </td>
@@ -127,10 +128,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="k in soldProducts">
-                    <td>{{k["product_id"]}}</td>
-                    <td>{{k["product_name"]}}</td>
-                    <td>{{k["quantity"]}}</td>
+                  <tr v-for="(k, idx) in soldProducts" :key="idx">
+                    <td>{{k.product_id}}</td>
+                    <td>{{getCarName(k.product_id)}}</td>
+                    <td>{{k.quantity}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -160,60 +161,72 @@
         quantity: ""
       },
       methods: {
+        apiHeaders() {
+          const token = localStorage.getItem("token");
+          return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+        },
         async carList() {
           try {
-            const headers = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-            const carlist = await axios.get("http://127.0.0.1:5000/api/products", headers);
+            // const headers = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+            const carlist = await axios.get("http://127.0.0.1:8000/products", this.apiHeaders());
             this.carSelect = carlist.data;
           } catch (error) {
             console.error("Error fetching products:", error);
+            alert("Failed to fetch products!");
           }
         },
-        async fetchProducts(i) {
-          for (const j in this.sales) {
-            if (this.sales[j].sale_id == i) {
-              this.soldProducts = this.sales[j].items;
-            }
-            // console.log(this.soldProducts)
-          }
+        getCarName(productId) {
+          const car = this.carSelect.find(c => c.id === productId);
+          return car ? car.name : "Unknown";
         },
         async getSales() {
           try {
-            const headers = {
-              headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-            };
-            const sale = await axios.get("http://127.0.0.1:8000/sales", headers)
-            this.sales = sale.data;
+            // const headers = {
+            //   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            // };
+            const res = await axios.get("http://127.0.0.1:8000/sales", this.apiHeaders());
+            this.sales = res.data;
           } catch (error) {
             console.error("Error fetching sales:", error);
             alert("Failed to fetch sales!");
           }
         },
-        async addSale() {
-          if (this.product_id && this.quantity) {
-            this.salesList.push({
-              product_id: Number(this.product_id),
-              quantity: Number(this.quantity)
-            });
-            this.product_id = "";
-            this.quantity = "";
-          }
-        }
-        ,
+        fetchProducts(saleId) {
+          // for (const j in this.sales) {
+          //   if (this.sales[j].sale_id == i) {
+          //     this.soldProducts = this.sales[j].items;
+          //   }
+          const s = this.sales.find(x => x.id === saleId);
+          this.soldProducts = s ? s.details : [];
+          // },
+          // }
+        },
+        addSale() {
+          if (!this.product_id || !this.quantity) return;
+          this.salesList.push({
+            product_id: Number(this.product_id),
+            quantity: Number(this.quantity)
+          });
+          this.product_id = "";
+          this.quantity = "";
+        },
+        removeSale(index) {
+          this.salesList.splice(index, 1);
+        },
         async makeSale() {
           try {
-            const headers = {
-              headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-            };
+            // const headers = {
+            //   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            // };
             if (this.salesList.length === 0) {
               alert("Add at least one product before submitting!");
               return;
             }
             // console.log("Sending sales:++++++++++++++++++++++++++++++", this.salesList);
-            const response = await axios.post("http://127.0.0.1:5000/api/sales", { sales: this.salesList }, headers);
+            const payload = { details: this.salesList };
+            await axios.post("http://127.0.0.1:8000/sales", payload, this.apiHeaders());
             alert("Sales added successfully!");
             this.salesList = [];
-            this.getSales();
             await this.getSales();
           } catch (error) {
             console.error("Error adding sales:", error)
@@ -221,10 +234,6 @@
           }
         }
       },
-      removeSale(index) {
-        this.salesList.splice(index, 1);
-      }
-      ,
       mounted() {
         if (localStorage.getItem("token") != null) {
           this.getSales();
