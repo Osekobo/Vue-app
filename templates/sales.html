@@ -196,8 +196,12 @@
           //   if (this.sales[j].sale_id == i) {
           //     this.soldProducts = this.sales[j].items;
           //   }
-          const s = this.sales.find(x => x.id === saleId);
-          this.soldProducts = s ? s.details : [];
+          const sale = this.sales.find(sale => sale.id === saleId);
+          if (sale) {
+            this.soldProducts = sale.details;
+          } else {
+            this.soldProducts = [];
+          }
           // },
           // }
         },

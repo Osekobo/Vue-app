@@ -36,14 +36,66 @@
   </nav>
   <main>
     <h1 class="text-white text-center">Dashboard</h1>
-    <div id="app" class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-      <div class="row w-100">
-        <div class="col-md-6 col-sm-12 mx-auto mt-4">
-          <canvas id="bar-chart" width="800" height="450"></canvas>
+
+    <div id="app" class="container mt-4">
+      <div class="row g-4">
+
+        <div class="col-lg-6">
+          <div class="card p-3">
+            <h5>Remaining Stock Per Car</h5>
+            <canvas id="remaining-chart"></canvas>
+          </div>
         </div>
+
+        <div class="col-lg-6">
+          <div class="card p-3">
+            <h5>Total Quantity Sold Per Car</h5>
+            <canvas id="sold-chart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card p-3">
+            <h5>Total Profit Per Car</h5>
+            <canvas id="profit-product-chart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card p-3">
+            <h5>Profit Per Day</h5>
+            <canvas id="profit-day-chart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="card p-3">
+            <h5>Sales Per Product (Details)</h5>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Qty Sold</th>
+                    <th>Total Sales Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="row in spp" :key="row.product_id">
+                    <td>{{ row.product_name }}</td>
+                    <td>{{ row.total_quantity_sold }}</td>
+                    <td>{{ row.total_sales_amount }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </main>
+
   <footer>
     <p class="mb-0">&copy; 2025 The Mall</p>
   </footer>
@@ -54,91 +106,121 @@
     new Vue({
       el: "#app",
       data: {
-        data: [],
-        labels: [],
+        spp: [],
+        rpp: [],
+        ppp: [],
+        ppd: [],
+
+        charts: {
+          remaining: null,
+          sold: null,
+          profitProduct: null,
+          profitDay: null
+        }
       },
+
       methods: {
-        async remainingstock() {
-          const headers = {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-          };
-          axios.get("http://127.0.0.1:8000/dashboard/spp", headers)
-            .then((response) => {
-              this.data = response.data.data;
-              this.labels = response.data.labels;
-              console.log(this.data);
-              console.log(this.labels);
-              // Bar chart
-              new Chart(document.getElementById("bar-chart"), {
-                type: 'bar',
-                data: {
-                  labels: this.labels,
-                  datasets: [
-                    {
-                      label: "Remaining Stock",
-                      backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
-                      data: this.data
-                    }
-                  ]
-                },
-                options: {
-                  responsive: true,
-                  plugins: {
-                    legend: {
-                      display: false,
-                      labels: {
-                        color: "#ffffff"
-                      }
-                    },
-                    title: {
-                      display: true,
-                      text: 'Remaining Stock Per Car',
-                      color: "#ffffff",
-                      font: {
-                        size: 18
-                      }
-                    }
-                  },
-                  scales: {
-                    x: {
-                      ticks: {
-                        color: "#ffffff"
-                      },
-                      grid: {
-                        color: "rgba(255, 255, 255, 0.2)"
-                      }
-                    },
-                    y: {
-                      ticks: {
-                        color: "#ffffff"
-                      },
-                      grid: {
-                        color: "rgba(255, 255, 255, 0.2)"
-                      }
-                    }
-                  }
-                }
-              });
-            })
-            .catch((error) => {
-              console.error("There was an error!", error);
-              alert("Failed to fetch dashboard data!");
-            });
+        apiHeaders() {
+          const token = localStorage.getItem("token");
+          return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
         },
+
+        async fetchAllDashboard() {
+          try {
+            const headers = this.apiHeaders();
+
+            const [sppRes, rppRes, pppRes, ppdRes] = await Promise.all([
+              axios.get("http://127.0.0.1:8000/dashboard/spp", headers),
+              axios.get("http://127.0.0.1:8000/dashboard/rpp", headers),
+              axios.get("http://127.0.0.1:8000/dashboard/ppp", headers),
+              axios.get("http://127.0.0.1:8000/dashboard/ppd", headers),
+            ]);
+
+            this.spp = sppRes.data;
+            this.rpp = rppRes.data;
+            this.ppp = pppRes.data;
+            this.ppd = ppdRes.data;
+
+            this.renderCharts();
+          } catch (error) {
+            console.error("Dashboard fetch error:", error);
+            alert("Failed to fetch dashboard data!");
+          }
+        },
+
+        destroyCharts() {
+          Object.values(this.charts).forEach(ch => {
+            if (ch) ch.destroy();
+          });
+        },
+
+        renderCharts() {
+          this.destroyCharts();
+
+          // Remaining stock 
+          const rppLabels = this.rpp.map(x => x.product_name);
+          const rppData = this.rpp.map(x => x.remaining_quantity);
+
+          this.charts.remaining = new Chart(document.getElementById("remaining-chart"), {
+            type: "bar",
+            data: {
+              labels: rppLabels,
+              datasets: [{ label: "Remaining", data: rppData }]
+            },
+            options: { responsive: true }
+          });
+
+          // Sold quantity 
+          const sppLabels = this.spp.map(x => x.product_name);
+          const sppQty = this.spp.map(x => x.total_quantity_sold);
+
+          this.charts.sold = new Chart(document.getElementById("sold-chart"), {
+            type: "bar",
+            data: {
+              labels: sppLabels,
+              datasets: [{ label: "Qty Sold", data: sppQty }]
+            },
+            options: { responsive: true }
+          });
+
+          // Profit per product 
+          const pppLabels = this.ppp.map(x => x.product_name);
+          const pppProfit = this.ppp.map(x => x.total_profit);
+
+          this.charts.profitProduct = new Chart(document.getElementById("profit-product-chart"), {
+            type: "bar",
+            data: {
+              labels: pppLabels,
+              datasets: [{ label: "Profit", data: pppProfit }]
+            },
+            options: { responsive: true }
+          });
+
+          // Profit per day (line)
+          const ppdLabels = this.ppd.map(x => x.date);
+          const ppdProfit = this.ppd.map(x => x.total_profit);
+
+          this.charts.profitDay = new Chart(document.getElementById("profit-day-chart"), {
+            type: "line",
+            data: {
+              labels: ppdLabels,
+              datasets: [{ label: "Profit per day", data: ppdProfit }]
+            },
+            options: { responsive: true }
+          });
+        }
       },
-      logout() {
-        localStorage.removeItem("token");
-        window.location.href = "login.html"
-      },
+
       mounted() {
         if (localStorage.getItem("token") != null) {
-          this.remainingstock();
+          this.fetchAllDashboard();
         } else {
           window.location.href = "login.html";
         }
-      },
+      }
     });
   </script>
+
   <script>
     const logoutBtn = document.getElementById('logoutBtn');
     const sidebar = document.getElementById('sidebar');
