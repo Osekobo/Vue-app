@@ -51,10 +51,16 @@
             <div class="modal-body">
               <form @submit.prevent="addProduct">
                 <input type="text" v-model="name" class="form-control mb-3" placeholder="Car Name" required>
-                <input type="number" v-model="buying_price" class="form-control mb-3" placeholder="Buying Price"
+                <input type="number" v-model.number="buying_price" class="form-control mb-3" placeholder="Buying Price"
                   required>
-                <input type="number" v-model="selling_price" class="form-control mb-3" placeholder="Selling Price"
-                  required>
+                <input type="number" v-model.number="selling_price" class="form-control mb-3"
+                  placeholder="Selling Price" required>
+
+                <input type="text" v-model="model" class="form-control mb-3" placeholder="Model" required>
+                <input type="number" v-model.number="year" class="form-control mb-3" placeholder="Year" required>
+                <input type="text" v-model="condition" class="form-control mb-3" placeholder="Condition" required>
+                <input type="text" v-model="fuel" class="form-control mb-3" placeholder="Fuel" required>
+
                 <button type="submit" class="btn btn-outline-primary">Add</button>
               </form>
             </div>
@@ -68,6 +74,10 @@
             <th>Car Name</th>
             <th>Buying Price</th>
             <th>Selling Price</th>
+            <th>Model</th>
+            <th>Year</th>
+            <th>Condition</th>
+            <th>Fuel</th>
           </tr>
         </thead>
         <tbody>
@@ -76,6 +86,10 @@
             <td>{{prod["name"]}}</td>
             <td>{{prod["buying_price"]}}</td>
             <td>{{prod["selling_price"]}}</td>
+            <td>{{prod["model"]}}</td>
+            <td>{{prod["year"]}}</td>
+            <td>{{prod["condition"]}}</td>
+            <td>{{prod["fuel"]}}</td>
           </tr>
         </tbody>
       </table>
@@ -93,7 +107,11 @@
         products: [],
         name: "",
         buying_price: "",
-        selling_price: ""
+        selling_price: "",
+        model: "",
+        year: "",
+        condition: "",
+        fuel: "",
       },
       methods: {
         async getProducts() {
@@ -119,13 +137,21 @@
             const newProduct = {
               name: this.name.trim(),
               buying_price: this.buying_price,
-              selling_price: this.selling_price
+              selling_price: this.selling_price,
+              model: this.model,
+              year: this.year,
+              condition: this.condition,
+              fuel: this.fuel,
             };
-            await axios.post("http://127.0.0.1:5000/api/products", newProduct, headers);
+            await axios.post("http://127.0.0.1:8000/products", newProduct, headers);
             alert("Product added successfully!");
             this.name = "";
             this.buying_price = "";
             this.selling_price = "";
+            this.model = "";
+            this.year = "";
+            this.condition = "";
+            this.fuel = "";
             this.getProducts();
           } catch (error) {
             console.error("Error adding product:", error);
