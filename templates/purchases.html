@@ -107,7 +107,6 @@
         },
         async productList() {
           try {
-            // const headers = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
             const res = await axios.get("http://127.0.0.1:8000/products", this.apiHeaders());
             this.infoz = res.data;
           } catch (error) {
@@ -117,9 +116,6 @@
         },
         async getPurchases() {
           try {
-            // const headers = {
-            //   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-            // };
             const res = await axios.get("http://127.0.0.1:8000/purchase", this.apiHeaders());
             this.purchases = res.data;
           } catch (error) {
@@ -129,9 +125,6 @@
         },
         async addPurchase() {
           try {
-            // const headers = {
-            //   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-            // };
             const newPurchase = {
               product_id: Number(this.product_id),
               quantity: Number(this.quantity)

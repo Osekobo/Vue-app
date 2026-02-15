@@ -167,7 +167,6 @@
         },
         async carList() {
           try {
-            // const headers = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
             const carlist = await axios.get("http://127.0.0.1:8000/products", this.apiHeaders());
             this.carSelect = carlist.data;
           } catch (error) {
@@ -181,9 +180,6 @@
         },
         async getSales() {
           try {
-            // const headers = {
-            //   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-            // };
             const res = await axios.get("http://127.0.0.1:8000/sales", this.apiHeaders());
             this.sales = res.data;
           } catch (error) {
@@ -192,18 +188,12 @@
           }
         },
         fetchProducts(saleId) {
-          // for (const j in this.sales) {
-          //   if (this.sales[j].sale_id == i) {
-          //     this.soldProducts = this.sales[j].items;
-          //   }
           const sale = this.sales.find(sale => sale.id === saleId);
           if (sale) {
             this.soldProducts = sale.details;
           } else {
             this.soldProducts = [];
           }
-          // },
-          // }
         },
         addSale() {
           if (!this.product_id || !this.quantity) return;
@@ -219,14 +209,10 @@
         },
         async makeSale() {
           try {
-            // const headers = {
-            //   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-            // };
             if (this.salesList.length === 0) {
               alert("Add at least one product before submitting!");
               return;
             }
-            // console.log("Sending sales:++++++++++++++++++++++++++++++", this.salesList);
             const payload = { details: this.salesList };
             await axios.post("http://127.0.0.1:8000/sales", payload, this.apiHeaders());
             alert("Sales added successfully!");
